@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useUpdateProfile } from "@/lib/hooks/account.hook";
+import { useState, useEffect, useRef } from "react";
+import { useUpdateProfile, useUploadAvatar } from "@/lib/hooks/account.hook";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, Camera, Plus, X } from "lucide-react";
+import { Loader2, Camera, Plus, X, Upload } from "lucide-react";
 
 interface Social {
   platform: string;
@@ -27,6 +27,8 @@ interface Social {
 
 interface ProfileData {
   full_name: string;
+  first_name?: string;
+  last_name?: string;
   email: string;
   bio: string;
   avatar?: string;
@@ -50,23 +52,32 @@ export function UpdateProfileModal({
 }: UpdateProfileModalProps) {
   const queryClient = useQueryClient();
   const { mutate: updateProfile, isPending } = useUpdateProfile();
+  const { mutate: uploadAvatar, isPending: isUploading } = useUploadAvatar();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
-    full_name: "",
+    first_name: "",
+    last_name: "",
     bio: "",
-    avatar: "",
     socials: [] as Social[],
   });
+
+  const [avatarPreview, setAvatarPreview] = useState<string | undefined>(
+    undefined,
+  );
 
   // Initialize form data when modal opens
   useEffect(() => {
     if (isOpen && profile) {
+      // Try to split full_name if first_name/last_name are not available
+      const nameParts = profile.full_name?.split(" ") || [];
       setFormData({
-        full_name: profile.full_name || "",
+        first_name: profile.first_name || nameParts[0] || "",
+        last_name: profile.last_name || nameParts.slice(1).join(" ") || "",
         bio: profile.bio || "",
-        avatar: profile.avatar || "",
         socials: profile.socials || [],
       });
+      setAvatarPreview(profile.avatar);
     }
   }, [isOpen, profile]);
 
@@ -103,6 +114,37 @@ export function UpdateProfileModal({
     }));
   };
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setAvatarPreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload the file
+    uploadAvatar(file);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -126,13 +168,10 @@ export function UpdateProfileModal({
     );
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
+  const getInitials = (firstName: string, lastName: string) => {
+    const first = firstName?.charAt(0) || "";
+    const last = lastName?.charAt(0) || "";
+    return (first + last).toUpperCase() || "??";
   };
 
   return (
@@ -145,49 +184,93 @@ export function UpdateProfileModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Avatar Section */}
-          <div className="flex flex-col items-center gap-4">
-            <div className="relative group">
-              <Avatar className="size-24 ring-2 ring-primary/20">
-                <AvatarImage src={formData.avatar} alt={formData.full_name} />
-                <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-primary to-chart-2 text-primary-foreground">
-                  {getInitials(formData.full_name)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                <Camera className="size-6 text-white" />
-              </div>
-            </div>
-            <div className="w-full">
-              <Label htmlFor="avatar" className="text-sm text-muted-foreground">
-                Avatar URL
-              </Label>
-              <Input
-                id="avatar"
-                name="avatar"
-                type="url"
-                value={formData.avatar}
-                onChange={handleInputChange}
-                placeholder="https://example.com/avatar.jpg"
-                className="mt-1"
+        {/* Avatar Section - Separate from form */}
+        <div className="flex flex-col items-center gap-3 pb-4 border-b">
+          <div className="relative group">
+            <Avatar className="size-24 ring-2 ring-primary/20">
+              <AvatarImage
+                src={avatarPreview}
+                alt={`${formData.first_name} ${formData.last_name}`}
               />
-            </div>
+              <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-primary to-chart-2 text-primary-foreground">
+                {getInitials(formData.first_name, formData.last_name)}
+              </AvatarFallback>
+            </Avatar>
+            <button
+              type="button"
+              onClick={handleAvatarClick}
+              disabled={isUploading}
+              className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer disabled:cursor-not-allowed"
+            >
+              {isUploading ? (
+                <Loader2 className="size-6 text-white animate-spin" />
+              ) : (
+                <Camera className="size-6 text-white" />
+              )}
+            </button>
           </div>
 
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleAvatarClick}
+            disabled={isUploading}
+            className="text-xs"
+          >
+            {isUploading ? (
+              <>
+                <Loader2 className="mr-1 size-3 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Upload className="mr-1 size-3" />
+                Change Photo
+              </>
+            )}
+          </Button>
+          <p className="text-xs text-muted-foreground">
+            Max 5MB. JPG, PNG, or GIF
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Info */}
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="full_name">Full Name</Label>
-              <Input
-                id="full_name"
-                name="full_name"
-                value={formData.full_name}
-                onChange={handleInputChange}
-                placeholder="Enter your full name"
-                required
-                className="mt-1"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="first_name">First Name</Label>
+                <Input
+                  id="first_name"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  placeholder="John"
+                  required
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="last_name">Last Name</Label>
+                <Input
+                  id="last_name"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  placeholder="Doe"
+                  required
+                  className="mt-1"
+                />
+              </div>
             </div>
 
             <div>

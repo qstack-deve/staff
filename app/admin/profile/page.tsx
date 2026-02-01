@@ -66,7 +66,7 @@ export default function AdminProfilePage() {
 
       <div className="mx-auto">
         {/* Profile Header */}
-        <div className="relative overflow-hidden rounded-3xl p-8 md:p-12 mb-12">
+        <div className="relative overflow-hidden rounded-3xl p-4 md:p-12 mb-12">
           {/* Accent decorations */}
           <div className="absolute -top-20 -right-20 w-60 h-60 bg-primary/10 rounded-full blur-3xl" />
           <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-chart-2/10 rounded-full blur-3xl" />
@@ -151,9 +151,9 @@ export default function AdminProfilePage() {
         </div>
 
         {/* Content Grid */}
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-4 xl:grid-cols-3">
           {/* Bio Section */}
-          <div className="lg:col-span-2">
+          <div className="xl:col-span-2">
             <div className="rounded-2xl border bg-card p-8">
               <h2 className="text-2xl font-bold mb-6">About</h2>
               <p className="text-muted-foreground leading-relaxed text-lg">
@@ -163,7 +163,7 @@ export default function AdminProfilePage() {
           </div>
 
           {/* Skills Section */}
-          <div className="lg:col-span-1">
+          <div className="xl:col-span-1">
             <div className="rounded-2xl border bg-card p-8 h-full">
               <h2 className="text-2xl font-bold mb-6">Skills & Expertise</h2>
               <div className="flex flex-wrap gap-2">

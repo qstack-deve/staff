@@ -26,3 +26,17 @@ export function useUpdateProfile() {
     retry: false,
   });
 }
+
+export function useUploadAvatar() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => accountApi.uploadAvatar(file),
+    onSuccess: () => {
+      toast.success("Avatar updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+    onError: () => {
+      toast.error("Failed to upload avatar");
+    },
+  });
+}

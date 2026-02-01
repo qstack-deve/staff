@@ -63,7 +63,7 @@ export function AdminSidebar() {
       onClose={closeSidebar}
       menuGroups={adminMenuGroups}
       logo={{
-        text: "Quantum Dashboard",
+        text: "QStack",
         href: "/admin",
         icon: (
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">

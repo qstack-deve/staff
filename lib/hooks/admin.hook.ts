@@ -52,12 +52,14 @@ export const useSuspendMember = (memberId: string) => {
   });
 };
 
-export const useAdminUpdateMember = () => {
+export const useAdminUpdateMember = (memberId: string) => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (memberId: string, data: any) =>
-      adminApi.updateMember(memberId, data),
+    mutationFn: (data: any) => adminApi.updateMember(memberId, data),
     onSuccess: () => {
       toast.success("Member updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["member", memberId] });
+      queryClient.invalidateQueries({ queryKey: ["members"] });
     },
     onError: () => {
       toast.error("Failed to update member");

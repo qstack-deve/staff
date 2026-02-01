@@ -106,7 +106,7 @@ export default function StaffPage() {
               </p>
 
               <div className="flex gap-3 mt-4">
-                {member.socials.map((social, idx) => (
+                {member.socials?.map((social, idx) => (
                   <a
                     key={idx}
                     href={social.url}

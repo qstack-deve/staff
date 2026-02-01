@@ -57,14 +57,14 @@ export default function StaffProfilePage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="">
       {/* Background decoration */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute top-0 left-1/3 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-chart-2/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="mx-auto w-11/12">
+      <div className="">
         {/* Profile Header */}
         <div className="relative overflow-hidden rounded-3xl p-8 md:p-12 mb-12">
           {/* Accent decorations */}
@@ -151,9 +151,9 @@ export default function StaffProfilePage() {
         </div>
 
         {/* Content Grid */}
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-8 xl:grid-cols-3">
           {/* Bio Section */}
-          <div className="lg:col-span-2">
+          <div className="xl:col-span-2">
             <div className="rounded-2xl border bg-card p-8">
               <h2 className="text-2xl font-bold mb-6">About</h2>
               <p className="text-muted-foreground leading-relaxed text-lg">
@@ -163,7 +163,7 @@ export default function StaffProfilePage() {
           </div>
 
           {/* Skills Section */}
-          <div className="lg:col-span-1">
+          <div className="xl:col-span-1">
             <div className="rounded-2xl border bg-card p-8 h-full">
               <h2 className="text-2xl font-bold mb-6">Skills & Expertise</h2>
               <div className="flex flex-wrap gap-2">

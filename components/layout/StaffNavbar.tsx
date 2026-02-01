@@ -25,7 +25,7 @@ export function StaffNavbar({ user }: StaffNavbarProps) {
       }}
       user={user}
       showNotifications={true}
-      showThemeSwitcher={true}
+      showThemeSwitcher={false}
     />
   );
 }

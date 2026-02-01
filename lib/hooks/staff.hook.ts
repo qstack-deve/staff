@@ -31,6 +31,6 @@ export const useGetSkills = () => {
 export const useGetRoles = () => {
   return useQuery({
     queryKey: ["roles"],
-    queryFn: () => staffApi.getSkills(),
+    queryFn: () => staffApi.getRoles(),
   });
 };

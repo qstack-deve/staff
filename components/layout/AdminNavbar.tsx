@@ -25,7 +25,7 @@ export function AdminNavbar({ user }: AdminNavbarProps) {
       }}
       user={user}
       showNotifications={true}
-      showThemeSwitcher={true}
+      showThemeSwitcher={false}
     />
   );
 }
