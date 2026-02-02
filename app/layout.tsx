@@ -19,9 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Taxon",
-  description:
-    "Automating Daily Transportation Tax Collection Without Leakages",
+  title: "quantum stack",
+  description: "",
 };
 
 export default async function RootLayout({
