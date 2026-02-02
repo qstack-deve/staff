@@ -9,6 +9,7 @@ import {
   Settings,
   User,
   Code2,
+  Tags,
 } from "lucide-react";
 
 const adminMenuGroups: SidebarMenuGroup[] = [
@@ -34,6 +35,11 @@ const adminMenuGroups: SidebarMenuGroup[] = [
         label: "Jobs & Postings",
         href: "/admin/jobs",
         icon: Briefcase,
+      },
+      {
+        label: "Roles & Skills",
+        href: "/admin/roles-skills",
+        icon: Tags,
       },
     ],
   },

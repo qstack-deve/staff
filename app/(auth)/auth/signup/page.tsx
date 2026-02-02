@@ -2,13 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Lock, Mail, Shield, AlertCircle, Check } from "lucide-react";
+import { Lock, Mail, Shield, AlertCircle, Check, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { handleLogin } from "@/lib/actions/auth.actions";
 import { GoogleIcon } from "../signin/page";
 import { useSignup } from "@/lib/hooks/auth.hook";
 import { FormInput } from "@/components/FormInput";
@@ -18,6 +17,8 @@ const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 type SignupForm = {
+  first_name: string;
+  last_name: string;
   email: string;
   password: string;
   password2: string;
@@ -46,6 +47,8 @@ const SignupPage = () => {
 
     try {
       const response = await signupHook({
+        first_name: data.first_name,
+        last_name: data.last_name,
         email: data.email,
         password: data.password,
         password2: data.password2,
@@ -71,7 +74,7 @@ const SignupPage = () => {
               Create an account
             </h1>
             <p className="text-muted-foreground">
-              Enter your email below to create your account
+              Enter your details below to create your account
             </p>
           </div>
 
@@ -95,6 +98,29 @@ const SignupPage = () => {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <FormInput
+                icon={User}
+                type="text"
+                name="first_name"
+                placeholder="First name"
+                register={register}
+                rules={{
+                  required: "First name is required",
+                }}
+              />
+              <FormInput
+                icon={User}
+                type="text"
+                name="last_name"
+                placeholder="Last name"
+                register={register}
+                rules={{
+                  required: "Last name is required",
+                }}
+              />
+            </div>
+
             <FormInput
               icon={Mail}
               type="email"

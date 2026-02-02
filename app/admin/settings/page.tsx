@@ -23,6 +23,7 @@ import {
   Settings,
   Palette,
 } from "lucide-react";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -203,10 +204,22 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="text-destructive">Danger Zone</CardTitle>
           <CardDescription>
-            Irreversible actions. Proceed with caution.
+            Account actions. Proceed with caution.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium">Sign Out</p>
+              <p className="text-sm text-muted-foreground">
+                Sign out of your account on this device
+              </p>
+            </div>
+            <LogoutButton />
+          </div>
+
+          <Separator />
+
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Delete Account</p>

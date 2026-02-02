@@ -20,7 +20,7 @@ export function StaffNavbar({ user }: StaffNavbarProps) {
       onToggleSidebar={toggleSidebar}
       onCloseSidebar={closeSidebar}
       logo={{
-        text: "Quantum",
+        text: "",
         href: "/dashboard",
       }}
       user={user}

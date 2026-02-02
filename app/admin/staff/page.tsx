@@ -31,8 +31,14 @@ interface Role {
   name: string;
 }
 
+interface User {
+  id: string;
+  email: string;
+}
+
 interface MemberType {
   id: string;
+  user: User;
   full_name: string;
   role: Role | null;
   socials: Social[];
@@ -85,6 +91,9 @@ export default function StaffPage() {
               <div className="flex flex-col">
                 <h3 className="font-bold text-lg leading-none">
                   {member.full_name.trim() || "Unknown User"}
+                </h3>
+                <h3 className="font-bold text-lg leading-none">
+                  {member.user.email}
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
                   {member.role?.name ?? "No Role Assigned"}

@@ -26,7 +26,7 @@ const LogoutButton = () => {
       logout();
 
       // Force a hard refresh so server components re-evaluate auth
-      router.replace("/scanner");
+      router.replace("/");
       // router.refresh();
     } catch (error) {
       console.error("Logout error:", error);
@@ -34,9 +34,14 @@ const LogoutButton = () => {
   };
 
   return (
-    <Button variant={"destructive"} onClick={signOut} type="button">
+    <Button
+      variant="outline"
+      onClick={signOut}
+      type="button"
+      className="gap-2 text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground transition-colors"
+    >
       <LogOut className="h-4 w-4" />
-      Logout
+      Sign Out
     </Button>
   );
 };

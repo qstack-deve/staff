@@ -20,7 +20,7 @@ export function AdminNavbar({ user }: AdminNavbarProps) {
       onToggleSidebar={toggleSidebar}
       onCloseSidebar={closeSidebar}
       logo={{
-        text: "Quantum",
+        text: "",
         href: "/admin",
       }}
       user={user}
