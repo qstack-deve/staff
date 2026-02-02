@@ -65,7 +65,7 @@ export default function StaffPage() {
   const { data: members } = useAdminGetMembers();
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Staff Directory</h1>
@@ -73,9 +73,6 @@ export default function StaffPage() {
             Manage your team members and their profiles.
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" /> Add Employee
-        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">

@@ -48,12 +48,162 @@ interface ItemType {
   name: string;
 }
 
+interface RoleType extends ItemType {
+  level: number;
+  assigned?: number;
+}
+
 interface ItemRowProps {
   item: ItemType;
   onUpdate: (id: string, name: string) => void;
   onDelete: (id: string) => void;
   isUpdating: boolean;
   isDeleting: boolean;
+}
+
+interface RoleRowProps {
+  role: RoleType;
+  onUpdate: (id: string, name: string, level: number) => void;
+  onDelete: (id: string) => void;
+  isUpdating: boolean;
+  isDeleting: boolean;
+}
+
+function RoleRow({
+  role,
+  onUpdate,
+  onDelete,
+  isUpdating,
+  isDeleting,
+}: RoleRowProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(role.name);
+  const [editLevel, setEditLevel] = useState(role.level);
+
+  const handleSave = () => {
+    if (
+      editValue.trim() &&
+      (editValue !== role.name || editLevel !== role.level)
+    ) {
+      onUpdate(role.id, editValue.trim(), editLevel);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditValue(role.name);
+    setEditLevel(role.level);
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="flex items-center justify-between rounded-lg border bg-card hover:bg-muted/50 transition-colors p-3">
+      {isEditing ? (
+        <div className="flex items-center gap-2 flex-1">
+          <Input
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            className="h-8 flex-1"
+            placeholder="Role name"
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSave();
+              if (e.key === "Escape") handleCancel();
+            }}
+          />
+          <Input
+            type="number"
+            value={editLevel}
+            onChange={(e) => setEditLevel(Number(e.target.value))}
+            className="h-8 w-20"
+            placeholder="Level"
+            min={1}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSave();
+              if (e.key === "Escape") handleCancel();
+            }}
+          />
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleSave}
+            disabled={isUpdating}
+            className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-100"
+          >
+            {isUpdating ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Check className="h-4 w-4" />
+            )}
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleCancel}
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div className="flex items-center gap-3">
+            <span className="font-medium">{role.name}</span>
+            <Badge variant="outline" className="text-xs">
+              Lvl {role.level}
+            </Badge>
+            <Badge variant="secondary" className="text-xs">
+              {role.assigned ?? 0} assigned
+            </Badge>
+          </div>
+          <div className="flex items-center gap-1">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setIsEditing(true)}
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-primary"
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete "{role.name}"?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently remove
+                    this role.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => onDelete(role.id)}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
 function ItemRow({
@@ -79,7 +229,7 @@ function ItemRow({
   };
 
   return (
-    <div className="flex items-center justify-between rounded-lg border bg-card hover:bg-muted/50 transition-colors">
+    <div className="flex items-center justify-between rounded-lg border bg-card hover:bg-muted/50 transition-colors p-3">
       {isEditing ? (
         <div className="flex items-center gap-2 flex-1">
           <Input
@@ -204,6 +354,52 @@ function AddItemForm({ onAdd, isAdding, placeholder }: AddItemFormProps) {
   );
 }
 
+interface AddRoleFormProps {
+  onAdd: (name: string, level: number) => void;
+  isAdding: boolean;
+}
+
+function AddRoleForm({ onAdd, isAdding }: AddRoleFormProps) {
+  const [name, setName] = useState("");
+  const [level, setLevel] = useState(1);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name.trim()) {
+      onAdd(name.trim(), level);
+      setName("");
+      setLevel(1);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex items-center gap-2">
+      <Input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Enter role name..."
+        className="flex-1"
+      />
+      <Input
+        type="number"
+        value={level}
+        onChange={(e) => setLevel(Number(e.target.value))}
+        placeholder="Level"
+        className="w-20"
+        min={1}
+      />
+      <Button type="submit" disabled={isAdding || !name.trim()}>
+        {isAdding ? (
+          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+        ) : (
+          <Plus className="h-4 w-4 mr-2" />
+        )}
+        Add
+      </Button>
+    </form>
+  );
+}
+
 export default function RolesSkillsPage() {
   // Roles hooks
   const { data: roles, isLoading: rolesLoading } = useGetRoles();
@@ -217,12 +413,12 @@ export default function RolesSkillsPage() {
   const { mutate: updateSkill, isPending: isUpdatingSkill } = useUpdateSkill();
   const { mutate: deleteSkill, isPending: isDeletingSkill } = useDeleteSkill();
 
-  const handleAddRole = (name: string) => {
-    addRole({ name });
+  const handleAddRole = (name: string, level: number) => {
+    addRole({ name, level });
   };
 
-  const handleUpdateRole = (id: string, name: string) => {
-    updateRole({ id, data: { name } });
+  const handleUpdateRole = (id: string, name: string, level: number) => {
+    updateRole({ id, data: { name, level } });
   };
 
   const handleDeleteRole = (id: string) => {
@@ -241,6 +437,7 @@ export default function RolesSkillsPage() {
     deleteSkill(id);
   };
 
+  console.log(roles);
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -268,11 +465,7 @@ export default function RolesSkillsPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <AddItemForm
-              onAdd={handleAddRole}
-              isAdding={isAddingRole}
-              placeholder="Enter role name..."
-            />
+            <AddRoleForm onAdd={handleAddRole} isAdding={isAddingRole} />
 
             <div className="space-y-2">
               {rolesLoading ? (
@@ -284,10 +477,10 @@ export default function RolesSkillsPage() {
                   No roles yet. Add your first role above.
                 </div>
               ) : (
-                roles?.map((role: ItemType) => (
-                  <ItemRow
+                roles?.map((role: RoleType) => (
+                  <RoleRow
                     key={role.id}
-                    item={role}
+                    role={role}
                     onUpdate={handleUpdateRole}
                     onDelete={handleDeleteRole}
                     isUpdating={isUpdatingRole}
