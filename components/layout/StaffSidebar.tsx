@@ -8,6 +8,7 @@ import {
   Settings,
   Briefcase,
   Code2,
+  FolderKanban,
 } from "lucide-react";
 
 const staffMenuGroups: SidebarMenuGroup[] = [
@@ -28,6 +29,11 @@ const staffMenuGroups: SidebarMenuGroup[] = [
         label: "My Jobs",
         href: "/jobs",
         icon: Briefcase,
+      },
+      {
+        label: "Portfolio",
+        href: "/portfolio",
+        icon: FolderKanban,
       },
     ],
   },

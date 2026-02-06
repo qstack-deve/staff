@@ -55,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <div className="mb-8">
       {/* Header Section */}
-      <div className="flex flex-row justify-between items-center gap-4 mb-6">
+      <div className="flex flex-row justify-between gap-4 mb-6">
         {/* Left side - title/subtitle */}
         <div>
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right side - actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex justify-end items-center gap-2">
           {actions && <div className="flex items-center gap-2">{actions}</div>}
         </div>
       </div>

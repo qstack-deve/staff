@@ -10,6 +10,7 @@ import {
   User,
   Code2,
   Tags,
+  FolderKanban,
 } from "lucide-react";
 
 const adminMenuGroups: SidebarMenuGroup[] = [
@@ -40,6 +41,11 @@ const adminMenuGroups: SidebarMenuGroup[] = [
         label: "Roles & Skills",
         href: "/admin/roles-skills",
         icon: Tags,
+      },
+      {
+        label: "Portfolio",
+        href: "/admin/portfolio",
+        icon: FolderKanban,
       },
     ],
   },

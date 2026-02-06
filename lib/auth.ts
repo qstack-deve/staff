@@ -4,7 +4,6 @@ export async function getCurrentUser() {
   const token = await getAccessToken();
 
   if (!token) return null;
-  console.log("Safe Auth Check:", token);
 
   try {
     const res = await fetch(
