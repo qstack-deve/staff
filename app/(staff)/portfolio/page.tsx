@@ -43,12 +43,12 @@ function PortfolioCard({ item }: { item: PortfolioItem }) {
           >
             {item.status}
           </Badge>
-          <Badge variant="secondary">{item.category.name}</Badge>
+          <Badge variant="secondary">{item?.category?.name}</Badge>
         </div>
       </CardHeader>
       <CardContent className="pt-0">
         <div className="flex flex-wrap gap-1.5 mb-4">
-          {item.tags.map((tag) => (
+          {item?.tags?.map((tag) => (
             <Badge key={tag.id} variant="outline" className="text-xs">
               {tag.name}
             </Badge>
